@@ -16,6 +16,9 @@ You will need at least:
 * Docker Engine >= 17.04
 * Docker Compose >= 1.12.0
 
+All instructions below assume that you have cloned the [waymarked-trails-site](https://github.com/waymarkedtrails/waymarked-trails-site)
+repository to a local directory.
+
 ## Quick start
 
 If you are eager to get started here is an overview over the necessary steps.
@@ -48,6 +51,25 @@ TILE_CACHE = ''
 TILE_BASE_URL = 'https://tile.waymarkedtrails.org'
 DB_USER = 'postgres'
 DB_RO_USER = 'postgres'
+```
+
+Then copy the file `docker-compose.yml` to the directory where your `waymarked-trails-site` repository resides. It is recommended to
+create a data directory outside of the Git repository that contains TLS key and certificate for nginX. Otherwise these are generated every
+time a container is created. This is the relevant section in `docker-compose.yml`:
+
+```
+volumes:
+    # create with e.g. openssl req -newkey rsa:2048 -x509 -keyout key.pem -out server.pem -subj "/C=/ST=/L=/O=/OU=/CN=localhost/" -days 3650 -nodes
+  - type: bind
+    source: ../data/etc/nginx/key.pem
+    target: /etc/nginx/key.pem
+  - type: bind
+    source: ../data/etc/nginx/server.pem
+    target: /etc/nginx/server.pem
+    # create with openssl dhparam -out dh2048.pem 2048
+  - type: bind
+    source: ../data/etc/nginx/dh2048.pem
+    target: /etc/nginx/dh2048.pem
 ```
 
 After that you run `docker-compose up waymarkedtrails` in the waymarked-trails-site directory.
