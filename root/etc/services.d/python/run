@@ -1,0 +1,2 @@
+#!/usr/bin/with-contenv sh
+WMT_CONFIG=hiking python3 /waymarkedtrails/frontend.py

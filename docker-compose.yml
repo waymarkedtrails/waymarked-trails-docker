@@ -1,0 +1,42 @@
+version: '3.2'
+services:
+    waymarkedtrails:
+        image: waymarkedtrails/waymarkedtrails:latest
+        volumes:
+            # create with e.g. openssl req -newkey rsa:2048 -x509 -keyout key.pem -out server.pem -subj "/C=/ST=/L=/O=/OU=/CN=localhost/" -days 3650 -nodes
+          - type: bind
+            source: ../data/etc/nginx/key.pem
+            target: /etc/nginx/key.pem
+          - type: bind
+            source: ../data/etc/nginx/server.pem
+            target: /etc/nginx/server.pem
+            # create with openssl dhparam -out dh2048.pem 2048
+          - type: bind
+            source: ../data/etc/nginx/dh2048.pem
+            target: /etc/nginx/dh2048.pem
+          - type: bind
+            source: .
+            target: /waymarkedtrails
+        depends_on:
+            - db
+        ports:
+            - "80:80"
+            - "443:443"
+        environment:
+            - PGHOST=db
+            - PGUSER=postgres
+            - NOCERT=yes
+            - NODH=yes
+            - DATAFILE=data.osm.pbf
+            - DBNAME=planet
+    db:
+        image: mdillon/postgis:9.6-alpine
+        volumes:
+          - type: volume
+            source: waymarkedtrails_data
+            target: /var/lib/postresql/data
+        ports:
+            - "5432:5432"
+volumes:
+    waymarkedtrails_data:
+        driver: local
