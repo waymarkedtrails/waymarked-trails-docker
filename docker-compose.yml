@@ -15,7 +15,7 @@ services:
             source: ../data/etc/nginx/dh2048.pem
             target: /etc/nginx/dh2048.pem
           - type: bind
-            source: .
+            source: ../waymarked-trails-site
             target: /waymarkedtrails
         depends_on:
             - db

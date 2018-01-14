@@ -25,7 +25,7 @@ If you are eager to get started here is an overview over the necessary steps.
 Read on below to get the details.
 
 * Download OpenStreetMap data in osm.pbf format to a file `data.osm.pbf` and place it within the waymarked-trails-site directory.
-* Copy `docker-compose.yml` into the waymarked-trails-site directory and adjust it to your needs.
+* Extend the docker-compose configuration by creating a `docker-compose.override.yml` file and adjusting it to your needs.
 * Create a suitable data directory which contains the TLS certificate and keys (otherwise these files will be regenerated at each start).
 * `docker-compose up waymarkedtrails` to run web and app server (the first time data will be imported and depending on your configuration
 TLS information might be generated)
@@ -53,7 +53,20 @@ DB_USER = 'postgres'
 DB_RO_USER = 'postgres'
 ```
 
-Then copy the file `docker-compose.yml` to the directory where your `waymarked-trails-site` repository resides. It is recommended to
+Use a `docker-compose.override.yml` file to customize the already present `docker-compose.yml` file like
+explained in the [Docker documentation](https://docs.docker.com/compose/extends/). At least you
+will have to adjust the section where the waymarked-trails-site repository is mounted into the container
+if its location on your disk deviates from where you run `docker-compose`.
+
+```
+volumes:
+[...]
+- type: bind
+  source: ../waymarked-trails-site
+  target: /waymarkedtrails
+ ```
+
+It is recommended to
 create a data directory outside of the Git repository that contains TLS key and certificate for nginX. Otherwise these are generated every
 time a container is created. This is the relevant section in `docker-compose.yml`:
 
@@ -70,9 +83,10 @@ volumes:
   - type: bind
     source: ../data/etc/nginx/dh2048.pem
     target: /etc/nginx/dh2048.pem
+[...]
 ```
 
-After that you run `docker-compose up waymarkedtrails` in the waymarked-trails-site directory.
+After that you run `docker-compose up waymarkedtrails`.
 This starts a container with nginX/CherryPy and also starts the PostgreSQL database container if it is not already running.
 The container checks if there is a database available and if not it imports data (see above). It also checks if TLS key, certificate and
 DH parameters are present and generates them otherwise.
@@ -81,4 +95,4 @@ After startup is complete you can browse to [https://localhost](https://localhos
 browser since this is a self signed certificate.
 By pressing Ctrl+C on the command line you can stop the container.
 The PostgreSQL database container is still running then (you can check with `docker ps`).
-If you want to stop the database container as well you can do so by running `docker-compose stop db` in the waymarked-trails-site directory.
+If you want to stop the database container as well you can do so by running `docker-compose stop db`.
