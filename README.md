@@ -35,7 +35,7 @@ TLS information might be generated)
 ## Importing data
 
 Waymarked Trails needs a database populated with OSM data to work. You first need a data file to import.
-It's probably easiest to grab an PBF of OSM data from [Mapzen](https://mapzen.com/data/metro-extracts/) or [Geofabrik](http://download.geofabrik.de/).
+It's probably easiest to grab an PBF of OSM data from [Geofabrik](http://download.geofabrik.de/).
 Once you have that file put it into the waymarked-trails-site directory. Data is imported the first time you run `docker-compose up waymarkedtrails` (see below).
 This starts the PostgreSQL container (downloads it if it not exists) and starts a container that runs the necessary scripts to populate the database
 and then starts the app server. If you later on want to re-import data you have to delete the existing database first. On the next start of the
