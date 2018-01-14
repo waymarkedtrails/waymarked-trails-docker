@@ -68,6 +68,7 @@ TILE_CACHE = ''
 TILE_BASE_URL = 'https://tile.waymarkedtrails.org'
 DB_USER = 'postgres'
 DB_RO_USER = 'postgres'
+DB_NODESTORE = '/path/to/nodestore'
 ```
 
 Use a `docker-compose.override.yml` file to customize the already present
