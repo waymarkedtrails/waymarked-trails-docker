@@ -17,6 +17,9 @@ services:
           - type: bind
             source: ../waymarked-trails-site
             target: /waymarkedtrails
+          - type: bind
+            source: ../data/import
+            target: /import
         depends_on:
             - db
         ports:

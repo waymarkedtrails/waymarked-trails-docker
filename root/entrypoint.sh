@@ -19,13 +19,13 @@ test $i -gt $MAXCOUNT && echo "> Timeout while waiting for PostgreSQL to be runn
 # check if the database DBNAME (DB falls back to planet if not) exists
 # if not we import data
 if ! psql -lqt | cut -d \| -f 1 | grep -qw $DB; then
-    if [ -f "/waymarkedtrails/$DATA" ]; then
+    if [ -f "/import/$DATA" ]; then
         echo
         echo "> Importing data into $DB."
 
         cd /waymarkedtrails
         # DATA = DATAFILE || data.osm.pbf
-        python3 makedb.py -j 4 -f $DATA db import
+        python3 makedb.py -j 4 -f /import/$DATA db import
         python3 makedb.py db prepare
 
         cd  /tmp
