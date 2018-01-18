@@ -5,9 +5,7 @@ RUN addgroup --gid 8080 --system nginx && adduser --uid 8080 --system --ingroup 
 
 # add S6 overlay so that we can manage python and nginx together
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.21.2.2/s6-overlay-amd64.tar.gz /tmp/
-# Debian symlinks /bin to /usr/bin (https://github.com/just-containers/s6-overlay/issues/125)
-RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" \
-    && tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin \
+RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / \
     && rm /tmp/s6-overlay-amd64.tar.gz
 
 # install everything which is provided as package
