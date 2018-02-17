@@ -32,6 +32,8 @@ services:
             - NODH=yes
             - DATAFILE=data.osm.pbf
             - DBNAME=planet
+            # parallel jobs, when importing data
+            - JOBS=4
     db:
         image: mdillon/postgis:9.6-alpine
         volumes:

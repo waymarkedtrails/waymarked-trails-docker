@@ -4,6 +4,7 @@ NGINX_PID_DIR=/run/nginx
 NGINX_CERT_DIR=/etc/nginx
 DB=${DBNAME:-planet}
 DATA=${DATAFILE:-data.osm.pbf}
+JOBS=${JOBS:-4}
 
 i=1
 MAXCOUNT=60
@@ -25,7 +26,7 @@ if ! psql -lqt | cut -d \| -f 1 | grep -qw $DB; then
 
         cd /waymarkedtrails
         # DATA = DATAFILE || data.osm.pbf
-        python3 makedb.py -j 4 -f /import/$DATA db import
+        python3 makedb.py -j $JOBS -f /import/$DATA db import
         python3 makedb.py db prepare
 
         cd  /tmp
