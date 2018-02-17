@@ -60,7 +60,6 @@ TILE_CACHE = ''
 TILE_BASE_URL = 'https://tile.waymarkedtrails.org'
 DB_USER = 'postgres'
 DB_RO_USER = 'postgres'
-DB_NODESTORE = '/path/to/nodestore'
 ```
 
 ## Extend the docker-compose configuration
