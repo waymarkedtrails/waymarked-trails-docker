@@ -4,6 +4,8 @@ NGINX_PID_DIR=/run/nginx
 NGINX_CERT_DIR=/etc/nginx
 DB=${DBNAME:-planet}
 DATA=${DATAFILE:-data.osm.pbf}
+JOBS=${JOBS:-4}
+WMT_CONFIG=${WMT_CONFIG:-hiking}
 
 i=1
 MAXCOUNT=60
@@ -25,7 +27,7 @@ if ! psql -lqt | cut -d \| -f 1 | grep -qw $DB; then
 
         cd /waymarkedtrails
         # DATA = DATAFILE || data.osm.pbf
-        python3 makedb.py -j 4 -f /import/$DATA db import
+        python3 makedb.py -j $JOBS -f /import/$DATA db import
         python3 makedb.py db prepare
 
         cd  /tmp
@@ -38,8 +40,8 @@ if ! psql -lqt | cut -d \| -f 1 | grep -qw $DB; then
         rm -f country_grid.sql.gz
 
         cd /waymarkedtrails
-        python3 makedb.py hiking create
-        python3 makedb.py hiking import
+        python3 makedb.py $WMT_CONFIG create
+        python3 makedb.py $WMT_CONFIG import
     else
         echo
         echo "> Data file $DATA missing. Cannot import data."
@@ -69,4 +71,4 @@ fi
 
 # start S6 init process and give it any parameters that might got in
 # as docker command
-exec /init $@
+exec env WMT_CONFIG=$WMT_CONFIG /init $@

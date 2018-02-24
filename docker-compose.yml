@@ -32,6 +32,10 @@ services:
             - NODH=yes
             - DATAFILE=data.osm.pbf
             - DBNAME=planet
+            # parallel jobs, when importing data
+            - JOBS=4
+            # map type to use. If you change this you have to re-import the data.
+            - WMT_CONFIG=hiking
     db:
         image: mdillon/postgis:9.6-alpine
         volumes:

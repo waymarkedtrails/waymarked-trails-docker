@@ -31,10 +31,6 @@ Read on below to get the details.
 
 * Download OpenStreetMap data in osm.pbf format to a file `data.osm.pbf` and
 place it within a defined data import directory.
-* Extend the docker-compose configuration by creating a
-`docker-compose.override.yml` file and adjusting it to your needs.
-* Create a suitable data directory which contains the TLS certificate and keys
-(otherwise these files will be regenerated at each start).
 * `docker-compose up waymarkedtrails` to run web and app server (the first time
 data will be imported and depending on your configuration
 TLS information might be generated)
@@ -46,21 +42,17 @@ TLS information might be generated)
 Waymarked Trails needs a database populated with OSM data to work. You first
 need a data file to import. It's probably easiest to grab an PBF of OSM data
 from [Geofabrik](http://download.geofabrik.de/). Once you have that file put it
-into the waymarked-trails-site directory. Data is imported the first time you
+into the directory `data/import/`. Data is imported the first time you
 run `docker-compose up waymarkedtrails` (see below). This starts the PostgreSQL
 container (downloads it if it not exists) and starts a container that runs the
 necessary scripts to populate the database and then starts the app server. If
 you later on want to re-import data you have to delete the existing database
-first. On the next start of the `waymarkedtrails` container data will be
-imported again. The data file can be customized in two ways. You can set the
-import directory and the data file name from within the compose file by
-adjusting the bind mount as described below and by overriding the environment
-variable `DATAFILE`.
+first: `docker rm waymarkedtrailsdocker_db_1`. On the next start of the
+`waymarkedtrails` container data will be imported again.
 
 ## Running the site
 
-After you have downloaded the necessary data you can start the web and app
-server. First you need a local configuration file which is placed in
+For waymarkedtrails you need a local configuration file which is placed in
 `config/local.py`. It should contain the following:
 
 ```
@@ -68,11 +60,13 @@ TILE_CACHE = ''
 TILE_BASE_URL = 'https://tile.waymarkedtrails.org'
 DB_USER = 'postgres'
 DB_RO_USER = 'postgres'
-DB_NODESTORE = '/path/to/nodestore'
 ```
 
-Use a `docker-compose.override.yml` file to customize the already present
-`docker-compose.yml` file like explained in the
+## Extend the docker-compose configuration
+
+Optionally you can extend the docker-compose configuration by creating a
+`docker-compose.override.yml` file and adjusting it to your needs as
+explained in the
 [Docker documentation](https://docs.docker.com/compose/extends/). At least you
 will have to adjust the section where the waymarked-trails-site repository is
 mounted into the container and the location of the data import directory if
@@ -88,6 +82,10 @@ volumes:
   source: ../data/import
   target: /import
  ```
+
+You can set the import directory for the pbf data file by adjusting the bind
+mount. The data file name is set in the environment section as variable
+DATAFILE.
 
 It is recommended to create a data directory outside of the Git repository that
 contains TLS key and certificate for nginX. Otherwise these are generated every
@@ -109,6 +107,10 @@ volumes:
     target: /etc/nginx/dh2048.pem
 [...]
 ```
+
+The port is configurable as well.
+
+## Startup the site
 
 After that you run `docker-compose up waymarkedtrails`.
 This starts a container with nginX/CherryPy and also starts the PostgreSQL
