@@ -1,3 +1,6 @@
+__WARNING: This docker image is no longer maintained and does not work with the current
+version of waymarkedtrails.__
+
 # Docker environment for Waymarked Trails
 
 [Docker](https://docker.com) is a virtualized environment that allows you to run
